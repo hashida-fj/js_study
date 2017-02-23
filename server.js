@@ -128,9 +128,9 @@ server.register(require('inert'), (err) =>  {
 
     server.route({
 	method: 'GET',
-	path: '/cleint\.js',
+	path: '/scripts/{name}',
 	handler: function (request, reply) {
-            reply.file('./client.js');
+            reply.file('./scripts/' +  encodeURIComponent(request.params.name));
 	}
     });
 
