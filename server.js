@@ -112,7 +112,6 @@ server.route({
 });
 
 // static page
-
 server.register(require('inert'), (err) =>  {
     if (err) {
         throw err;
@@ -141,6 +140,16 @@ server.register(require('inert'), (err) =>  {
             reply.file('./client.js');
 	}
     });
+
+    // data
+    server.route({
+	method: 'GET',
+	path: '/assets/{name}',
+	handler: function (request, reply) {
+            reply.file('./assets/' +  encodeURIComponent(request.params.name));
+	}
+    });
+
 });
 
 
