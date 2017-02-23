@@ -35,7 +35,6 @@ server.route({
     }
 });
 
-
 q8_tmp = `
   SELECT
     o_year,
@@ -85,15 +84,19 @@ q8_tmp = `
 
 server.route({
     method: 'GET',
-    path: '/q8',
+    path: '/q8/{nation}/{region}/{type}',
     handler: function (request, reply) {
 
 	// connect to our database
 	pool.connect(function (err, client, done) {
 	    if (err) throw err;
 
+	    q8_params = request.paramsArray.map( function(x){
+		return x.replace(/_/g, " ").toUpperCase();
+	    });
+
 	    // execute a query on our database
-	    client.query(q8_tmp, ['BRAZIL', 'AMERICA', 'ECONOMY ANODIZED STEEL'], function (err, result) {
+	    client.query(q8_tmp, q8_params, function (err, result) {
 		if (err) throw err;
 		// just print the result to the console
 		console.log(result);
