@@ -35,22 +35,69 @@ server.route({
     }
 });
 
+
+q8_tmp = `
+  SELECT
+    o_year,
+    SUM(
+    CASE
+      WHEN
+        nation = $1::text
+      THEN
+        volume
+      ELSE
+        0
+    END
+       ) / SUM(volume) AS mkt_share
+  FROM
+    (
+      SELECT
+        EXTRACT(YEAR FROM o_orderdate) AS o_year,
+        l_extendedprice * (1 - l_discount) AS volume,
+        n2.n_name AS nation
+      FROM
+        part,
+        supplier,
+        lineitem,
+        orders,
+        customer,
+        nation n1,
+        nation n2,
+        region
+      WHERE
+        p_partkey = l_partkey
+        AND s_suppkey = l_suppkey
+        AND l_orderkey = o_orderkey
+        AND o_custkey = c_custkey
+        AND c_nationkey = n1.n_nationkey
+        AND n1.n_regionkey = r_regionkey
+        AND r_name = $2::text
+        AND s_nationkey = n2.n_nationkey
+        AND o_orderdate BETWEEN DATE '1995-01-01' AND DATE '1996-12-31'
+        AND p_type = $3::text
+    )
+    AS all_nations
+  GROUP BY
+    o_year
+  ORDER BY
+    o_year;
+`;
+
 server.route({
     method: 'GET',
-    path: '/pg_test',
-    handler: function (request, reply){
+    path: '/q8',
+    handler: function (request, reply) {
 
 	// connect to our database
 	pool.connect(function (err, client, done) {
 	    if (err) throw err;
 
 	    // execute a query on our database
-	    client.query('SELECT n_name from nation',  function (err, result) {
+	    client.query(q8_tmp, ['BRAZIL', 'AMERICA', 'ECONOMY ANODIZED STEEL'], function (err, result) {
 		if (err) throw err;
 		// just print the result to the console
-		console.log(result.rows); // outputs: { name: 'brianc' }
-
-		reply(result);
+		console.log(result);
+		reply(result.rows);
 
 		// disconnect the client
 		client.end(function (err) {
