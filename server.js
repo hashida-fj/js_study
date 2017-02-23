@@ -108,9 +108,24 @@ server.route({
     }
 });
 
+// static page
+
+server.register(require('inert'),  (err) =>  {
+    if (err) {
+        throw err;
+    }
+
+    server.route({
+        method: 'GET',
+        path: '/static',
+        handler: function (request,  reply) {
+	    reply.file('./index.html');
+	}
+    });
+});
+
 // Start the server
 server.start((err) => {
-
     if (err) {
         throw err;
     }
