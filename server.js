@@ -110,7 +110,7 @@ server.route({
 
 // static page
 
-server.register(require('inert'),  (err) =>  {
+server.register(require('inert'), (err) =>  {
     if (err) {
         throw err;
     }
@@ -118,11 +118,28 @@ server.register(require('inert'),  (err) =>  {
     server.route({
         method: 'GET',
         path: '/static',
-        handler: function (request,  reply) {
+        handler: function (request, reply) {
 	    reply.file('./index.html');
 	}
     });
+
+    server.route({
+	method: 'GET',
+	path: '/cleint\.js',
+	handler: function (request, reply) {
+            reply.file('./client.js');
+	}
+    });
+
+    server.route({
+	method: 'GET',
+	path: '/script',
+	handler: function (request, reply) {
+            reply.file('./client.js');
+	}
+    });
 });
+
 
 // Start the server
 server.start((err) => {
