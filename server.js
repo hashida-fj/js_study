@@ -111,6 +111,31 @@ server.route({
     }
 });
 
+server.route({
+    method: 'GET',
+    path: '/api/nations',
+    handler: function (request, reply) {
+
+	// connect to our database
+	pool.connect(function (err, client, done) {
+	    if (err) throw err;
+
+	    // execute a query on our database
+	    client.query("select n_name from nation", function (err, result) {
+		if (err) throw err;
+		// just print the result to the console
+		reply(result.rows);
+
+		// disconnect the client
+		client.end(function (err) {
+		    if (err) throw err;
+		});
+	    });
+	});
+    }
+});
+
+
 // static page
 server.register(require('inert'), (err) =>  {
     if (err) {
