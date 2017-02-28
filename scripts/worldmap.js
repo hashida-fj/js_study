@@ -79,3 +79,9 @@ d3.json("http://luke2.zetta.flab.fujitsu.co.jp:3000/assets/world-50m_geo.json", 
     });
 });
 
+
+
+function Sample1() {
+    var hoge = controler.region;
+    alert("hoge" + hoge);
+}
