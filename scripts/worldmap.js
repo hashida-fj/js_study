@@ -1,21 +1,11 @@
 var width = 1000;
 var height = 1000;
 
-var div = d3.select("body")
-    .append("div")
-    .attr("class", "world")
-    .attr("width", width)
-    .attr("height", height);
-
 // leaflet
-var map = new L.Map(d3.select('div').node())
-    .setView([0, 0], 1);
-
+var map = L.map('mapid').setView([0, 0], 1);
 var tile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
-
-var svgLayer =  d3.select(map.getPanes().overlayPane).append('svg').attr('class', 'leaflet-zoom-hide');
 
 // color mapper
 var color = d3.scale.category20();
@@ -56,7 +46,7 @@ function zoomToFeature(e) {
     map.fitBounds(e.target.getBounds());
 }
 
-function onEachFeature(feature,  layer) {
+function onEachFeature(feature, layer) {
     layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
