@@ -55,10 +55,11 @@ function onEachFeature(feature, layer) {
 }
 
 // "https://d3js.org/world-110m.v1.json"
-// "http://luke2.zetta.flab.fujitsu.co.jp:3000/assets/world-50m.json"
-d3.json("http://luke2.zetta.flab.fujitsu.co.jp:3000/assets/world-50m_geo.json", function(error, world) {
-    d3.json("http://luke2.zetta.flab.fujitsu.co.jp:3000/api/nations", function (error, nations) {
+d3.json("assets/world-50m.topojson", function(error, world) {
+    d3.json("api/nations", function (error, nations) {
 	console.log(nations);
+
+	countries = topojson.feature(world, world.objects.countries);
 
 	cappedNames = nations.map ( function (nation) {
 	    return nation.n_name.trim();
@@ -66,7 +67,7 @@ d3.json("http://luke2.zetta.flab.fujitsu.co.jp:3000/assets/world-50m_geo.json", 
 
 	console.log(cappedNames);
 
-	geojson = L.geoJson(world, {
+	geojson = L.geoJson(countries, {
 	    style: style,
 	    onEachFeature: onEachFeature,
 
