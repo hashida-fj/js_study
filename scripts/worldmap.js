@@ -1,18 +1,20 @@
 var width = 1000;
 var height = 1000;
 
-// leaflet
+// leaflet objects
 var map = L.map('mapid').setView([0, 0], 1);
 var tile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
+var geojson;
 
 // color mapper
 var color = d3.scale.category20();
+var yellowGreen = d3.interpolateYlGn();
 
 var style = function (feature) {
     return {
-        fillColor: color(feature.properties.pop_est),
+        fillColor: '#888888',
         weight: 1,
         opacity: 1,
         color: 'white',
@@ -21,7 +23,6 @@ var style = function (feature) {
     };
 };
 
-var geojson;
 
 function highlightFeature(e) {
     var layer =  e.target;
@@ -54,18 +55,15 @@ function onEachFeature(feature, layer) {
     });
 }
 
-// "https://d3js.org/world-110m.v1.json"
+// load topojson
 d3.json("assets/world-50m.topojson", function(error, world) {
     d3.json("api/nations", function (error, nations) {
-	console.log(nations);
 
 	countries = topojson.feature(world, world.objects.countries);
 
 	cappedNames = nations.map ( function (nation) {
 	    return nation.n_name.trim();
 	});
-
-	console.log(cappedNames);
 
 	geojson = L.geoJson(countries, {
 	    style: style,
@@ -80,9 +78,10 @@ d3.json("assets/world-50m.topojson", function(error, world) {
     });
 });
 
-
+// Handler -----------------------------------------------------
 
 function Sample1() {
+
     // REGION
     var getCheckedValue = function(radio) {
 	return [].reduce.call(radio, function(result, option) {
@@ -90,14 +89,7 @@ function Sample1() {
 	    return result;
 	}, []);
     };
-
     region = getCheckedValue(controller.region)[0];
-    //console.log(region);
-
-    // PROD
-    //console.log(controller.prod_size.value);
-    //console.log(controller.prod_texture.value);
-    //console.log(controller.prod_material.value);
 
     // NATIONS
     var getSelectedValues =  function(selectElement) {
@@ -107,28 +99,26 @@ function Sample1() {
 	}, []);
     };
     nations = getSelectedValues(controller.nations);
-    // console.log(nations);
 
-    // Progress bar
-    // var $pb = $('.progress .progress-bar');
-    // $pb.attr('data-transitiongoal', 100);
+    // url requests are excuted asynchronously.
+    // So, they should be called in callback function
+    geojson.eachLayer( function (layer) {
+	var name = layer.feature.properties.name;
 
+	if (nations.indexOf(name) != -1) {
+	    var url = "api/q8?" +
+		"nation=" + name +
+		"&region=" + region +
+		"&type=" + controller.prod_size.value + "_" +
+		controller.prod_texture.value + "_" +
+		controller.prod_material.value;
 
-    nations.forEach( function (nation) {
-	var url = "api/q8?" +
-	    "nation=" + nation +
-	    "&region=" + region +
-	    "&type=" + controller.prod_size.value + "_" +
-	               controller.prod_texture.value + "_" +
-	               controller.prod_material.value;
-
-	console.log(url);
-
-	d3.json(url, function(error, result) {
-	    console.log(result);
-	});
-
+	    d3.json(url, function(error, result) {
+		layer.setStyle({
+		    fillColor: d3.interpolateOrRd(result[0].mkt_share*25),
+		    fillOpacity: 0.7
+		});
+	    });
+	}
     });
-
-
 }
