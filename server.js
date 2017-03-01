@@ -3,7 +3,9 @@
 // note: all config is optional and the environment variables
 //       will be read if the config is not present
 
-var pg = require('pg');
+const Hapi = require('hapi');
+const Joi = require('joi');
+const Pg = require('pg');
 
 var config = {
     user: 'jupyter',  //env var: PGUSER
@@ -14,15 +16,10 @@ var config = {
     idleTimeoutMillis: 3000,  // how long a client is allowed to remain idle before being closed
 };
 
-var pool = new pg.Pool(config);
-
-
-const Hapi = require('hapi');
-
 // Create a server with a host and port
 const server = new Hapi.Server();
 server.connection({
-    host: 'luke2.zetta.flab.fujitsu.co.jp',
+    host: 'localhost',
     port: 3000
 });
 
@@ -35,7 +32,15 @@ server.route({
     }
 });
 
-q8_tmp = `
+// Query ------------------------------------------------
+
+server.route({
+    method: 'GET',
+    path: '/api/q8',
+    handler: function (request, reply) {
+
+/////////////////////
+	var  q8_tmp = `
   SELECT
     o_year,
     SUM(
@@ -81,25 +86,24 @@ q8_tmp = `
   ORDER BY
     o_year;
 `;
+/////////////////////
 
-server.route({
-    method: 'GET',
-    path: '/q8/{nation}/{region}/{type}',
-    handler: function (request, reply) {
+	var q8_params = [request.query.nation.replace(/_/g, " ").toUpperCase(),
+			 request.query.region.replace(/_/g, " ").toUpperCase(),
+			 request.query.type.replace(/_/g, " ").toUpperCase()
+			];
 
 	// connect to our database
-	pool.connect(function (err, client, done) {
+	var client = new Pg.Client(config);
+	client.connect(function (err) {
 	    if (err) throw err;
-
-	    q8_params = request.paramsArray.map( function(x){
-		return x.replace(/_/g, " ").toUpperCase();
-	    });
 
 	    // execute a query on our database
 	    client.query(q8_tmp, q8_params, function (err, result) {
 		if (err) throw err;
+
 		// just print the result to the console
-		console.log(result);
+		// console.log(result.rows);
 		reply(result.rows);
 
 		// disconnect the client
@@ -108,6 +112,28 @@ server.route({
 		});
 	    });
 	});
+    },
+    config : {
+	validate: {
+	    query : { nation : Joi.string().min(1).required(),
+		      region : Joi.string().min(1).required(),
+		      type : Joi.string().min(1).required()
+		    }
+	}
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/api/parm_test',
+    handler: function (request, reply){
+	reply({greeting : 'hello ' + request.query.name });
+    },
+    config : {
+	validate: {
+	    query : { name: Joi.string().min(1).required()
+	    }
+	}
     }
 });
 
@@ -117,7 +143,8 @@ server.route({
     handler: function (request, reply) {
 
 	// connect to our database
-	pool.connect(function (err, client, done) {
+	var client = new Pg.Client(config);
+	client.connect(function (err) {
 	    if (err) throw err;
 
 	    // execute a query on our database
@@ -135,8 +162,8 @@ server.route({
     }
 });
 
+// static page, script, assets ------------------------------------
 
-// static page
 server.register(require('inert'), (err) =>  {
     if (err) {
         throw err;
@@ -158,14 +185,6 @@ server.register(require('inert'), (err) =>  {
 	}
     });
 
-    server.route({
-	method: 'GET',
-	path: '/script',
-	handler: function (request, reply) {
-            reply.file('./client.js');
-	}
-    });
-
     // data
     server.route({
 	method: 'GET',
@@ -174,7 +193,6 @@ server.register(require('inert'), (err) =>  {
             reply.file('./assets/' +  encodeURIComponent(request.params.name));
 	}
     });
-
 });
 
 

@@ -90,12 +90,14 @@ function Sample1() {
 	    return result;
 	}, []);
     };
-    console.log(getCheckedValue(controller.region)[0]);
+
+    region = getCheckedValue(controller.region)[0];
+    //console.log(region);
 
     // PROD
-    console.log(controller.prod_size.value);
-    console.log(controller.prod_texture.value);
-    console.log(controller.prod_material.value);
+    //console.log(controller.prod_size.value);
+    //console.log(controller.prod_texture.value);
+    //console.log(controller.prod_material.value);
 
     // NATIONS
     var getSelectedValues =  function(selectElement) {
@@ -104,10 +106,29 @@ function Sample1() {
 	    return result;
 	}, []);
     };
-    console.log(getSelectedValues(controller.nations));
+    nations = getSelectedValues(controller.nations);
+    // console.log(nations);
 
     // Progress bar
     // var $pb = $('.progress .progress-bar');
     // $pb.attr('data-transitiongoal', 100);
+
+
+    nations.forEach( function (nation) {
+	var url = "api/q8?" +
+	    "nation=" + nation +
+	    "&region=" + region +
+	    "&type=" + controller.prod_size.value + "_" +
+	               controller.prod_texture.value + "_" +
+	               controller.prod_material.value;
+
+	console.log(url);
+
+	d3.json(url, function(error, result) {
+	    console.log(result);
+	});
+
+    });
+
 
 }
