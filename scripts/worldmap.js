@@ -83,6 +83,31 @@ d3.json("assets/world-50m.topojson", function(error, world) {
 
 
 function Sample1() {
-    var hoge = controler.region;
-    alert("hoge" + hoge);
+    // REGION
+    var getCheckedValue = function(radio) {
+	return [].reduce.call(radio, function(result, option) {
+	    if (option.checked) result.push(option.labels[0].innerText);
+	    return result;
+	}, []);
+    };
+    console.log(getCheckedValue(controller.region)[0]);
+
+    // PROD
+    console.log(controller.prod_size.value);
+    console.log(controller.prod_texture.value);
+    console.log(controller.prod_material.value);
+
+    // NATIONS
+    var getSelectedValues =  function(selectElement) {
+	return [].reduce.call(selectElement.options, function(result, option) {
+	    if (option.selected) result.push(option.value);
+	    return result;
+	}, []);
+    };
+    console.log(getSelectedValues(controller.nations));
+
+    // Progress bar
+    // var $pb = $('.progress .progress-bar');
+    // $pb.attr('data-transitiongoal', 100);
+
 }
