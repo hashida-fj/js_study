@@ -2,7 +2,7 @@ var width = 1000;
 var height = 1000;
 
 // leaflet objects
-var map = L.map('mapid').setView([0, 0], 1);
+var map = L.map('mapid').setView([30, 0], 2);
 var tile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
