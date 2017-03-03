@@ -41,6 +41,7 @@ server.route({
 
 /////////////////////
 	var  q8_tmp = `
+  explain (format json, costs false)
   SELECT
     o_year,
     SUM(
@@ -174,6 +175,14 @@ server.register(require('inert'), (err) =>  {
         path: '/static',
         handler: function (request, reply) {
 	    reply.file('./index.html');
+	}
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/tree_test',
+        handler: function (request, reply) {
+	    reply.file('./tree.html');
 	}
     });
 
