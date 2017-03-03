@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "generate-schema": "^2.3.3",
     "hapi": "^16.1.0",
     "inert": "^4.1.0",
+    "mongodb": "^2.2.24",
     "pg": "^6.1.2"
   }
 }
