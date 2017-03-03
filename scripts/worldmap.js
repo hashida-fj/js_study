@@ -9,7 +9,10 @@ var tile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 var geojson;
 
 // color mapper
-var color = d3.scale.category20();
+var color =  function (v) {
+    //return d3.interpolateRdYlGn(Math.pow(v*5));
+    return d3.interpolateRdYlGn(v*5);
+};
 var yellowGreen = d3.interpolateYlGn();
 
 var style = function (feature) {
@@ -19,7 +22,7 @@ var style = function (feature) {
         opacity: 1,
         color: 'white',
         dashArray: '3',
-        fillOpacity: 0.5
+        fillOpacity: 0.7
     };
 };
 
@@ -30,7 +33,7 @@ function highlightFeature(e) {
         weight: 5,
         color: '#666',
         dashArray: '3',
-        fillOpacity: 0.8
+        fillOpacity: 0.9
     });
 
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -45,7 +48,7 @@ function resetHighlight(e) {
         weight: 1,
         color: 'white',
         dashArray: '3',
-        fillOpacity: 0.5
+        fillOpacity: 0.7
     });
 }
 
@@ -84,10 +87,28 @@ d3.json("assets/world-50m.topojson", function(error, world) {
     });
 });
 
+// legend
+
+var legend =  L.control({position: 'bottomright'});
+legend.onAdd =  function (map) {
+
+    var div =  L.DomUtil.create('div', 'info legend'),
+	grades =  [0, 1, 2, 4, 8, 16, 20];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i =  0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + color(grades[i]/100.0) + '"></i> ' +
+	    ((grades[i] != 20) ? grades[i] : "20+" ) + "<br>";
+    }
+    return div;
+};
+
+legend.addTo(map);
+
 // Handler -----------------------------------------------------
 
 function Sample1() {
-
     // REGION
     var getCheckedValue = function(radio) {
 	return [].reduce.call(radio, function(result, option) {
@@ -121,14 +142,14 @@ function Sample1() {
 
 	    d3.json(url, function(error, result) {
 		layer.setStyle({
-		    fillColor: d3.interpolateYlGnBu(result[0].mkt_share*25),
-		    fillOpacity: 0.5
+		    fillColor: color(result[0].mkt_share),
+		    fillOpacity: 0.7
 		});
 	    });
 	} else {
 	    layer.setStyle({
 		fillColor: '#888888',
-		fillOpacity: 0.5
+		fillOpacity: 0.7
 	    });
 	}
     });
