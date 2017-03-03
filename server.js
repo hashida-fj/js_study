@@ -115,9 +115,9 @@ server.route({
     },
     config : {
 	validate: {
-	    query : { nation : Joi.string().min(1).required(),
-		      region : Joi.string().min(1).required(),
-		      type : Joi.string().min(1).required()
+	    query : { nation : Joi.string().min(1).default("BRAZIL"),
+		      region : Joi.string().min(1).default("ASIA"),
+		      type : Joi.string().min(1).default("ECONOMY_ANODIZED_STEEL")
 		    }
 	}
     }
