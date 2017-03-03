@@ -23,7 +23,6 @@ var style = function (feature) {
     };
 };
 
-
 function highlightFeature(e) {
     var layer =  e.target;
 
@@ -31,7 +30,7 @@ function highlightFeature(e) {
         weight: 5,
         color: '#666',
         dashArray: '3',
-        fillOpacity: 0.7
+        fillOpacity: 0.8
     });
 
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -40,7 +39,14 @@ function highlightFeature(e) {
 }
 
 function resetHighlight(e) {
-    geojson.resetStyle(e.target);
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.5
+    });
 }
 
 function zoomToFeature(e) {
@@ -115,9 +121,14 @@ function Sample1() {
 
 	    d3.json(url, function(error, result) {
 		layer.setStyle({
-		    fillColor: d3.interpolateOrRd(result[0].mkt_share*25),
-		    fillOpacity: 0.7
+		    fillColor: d3.interpolateYlGnBu(result[0].mkt_share*25),
+		    fillOpacity: 0.5
 		});
+	    });
+	} else {
+	    layer.setStyle({
+		fillColor: '#888888',
+		fillOpacity: 0.5
 	    });
 	}
     });
