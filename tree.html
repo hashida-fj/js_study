@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,12 +7,19 @@
 
 	<!-- d3 -->
 	<script src="http://d3js.org/d3.v3.min.js"></script>
+
+	<!-- font awesome -->
+	<script src="https://use.fontawesome.com/9a30fbcc62.js"></script>
     </head>
 
     <body>
+	<i class="fa fa-sitemap"></i>
+	<i class="fa fa-code-fork fa-rotate-180"></i>
+
+
 	<script type="text/javascript">
 
-         var width = 450;
+         var width = 1200;
 	 var height = 700;
 
 	 var svg = d3.select("body").append("svg")
@@ -47,7 +55,7 @@
 	     }
 	 }
 
-	 d3.json("api/q8", function(err, data) {
+	 d3.json("api/q8", (err, data) => {
 
 	     var obj = data[0]["QUERY PLAN"][0]["Plan"];
 	     var renamedObj = JSON.parse(JSON.stringify(obj).split('"Node Type":').join('"name":'));
@@ -55,30 +63,15 @@
 
 	     // tree.nodesで、childrenのname分だけ、name/children/parent/depth/x/yを作る。
 	     var nodes = tree.nodes(renamedObj);
+	     nodes.forEach( d => {
+		 d.x = d.x * 2.5;
+		 d.y = d.y + 30;
+	     })
 
 	     // nodesから、diagonal用データ構造を作る
 	     var links = tree.links(nodes);
 
-
-	     // 円とテキストを入れるノードのコンテナg。
-	     var node = svg.selectAll(".node")
-			   .data(nodes) //nodesの数分gを作る。
-			   .enter()
-			   .append("g")
-			   .attr("class", "node")
-			   .attr("transform", function(d){ return "translate("+ d.x + "," + (d.y + 30) + ")";});
-
-	     node.append("circle")
-	         .attr("r", 10)
-	         .attr("fill", "steelblue");
-
-	     node.append("text")
-	         .text(function(d) { return d.name})
-	         .attr("x", 5)
-		 .attr("y", 5)
-
-	     var diagonal = d3.svg.diagonal()
-			      .projection(function(d){ return [d.x, d.y + 30];}); // 横向きにするためにxとyを逆に。
+	     var diagonal = d3.svg.diagonal();
 
 	     //linksで作ったsource、targetでdiagonal曲線を作る。
 	     svg.selectAll(".link")
@@ -90,10 +83,58 @@
 	        .attr("stroke", "gray")
 	        .attr("d", diagonal);
 
+	     // 円とテキストを入れるノードのコンテナg。
+	     var node = svg.selectAll(".node")
+			   .data(nodes) //nodesの数分gを作る。
+			   .enter()
+			   .append("g")
+			   .attr("class", "node")
+			   .attr("transform", d => { return "translate("+ d.x + "," + d.y + ")";});
+
+	     node.append("circle")
+	         .attr("r", 20)
+
+//	     node.append("text")
+//	         .text(d => {return d.name} )
+//	         .attr("x", 0)
+//		 .attr("y", 0)
+
+	     node.append('svg:foreignObject')
+	         .attr('x', -20)
+	         .attr('y', -20)
+	         .append("xhtml:body")
+	         .html( d => {
+
+		     if (d.name == "Seq Scan")
+			 return '<i class="fa fa-table"> ' + d["Relation Name"] + '</i>'
+		     else if (d.name == "Index Scan")
+			 return '<i class="fa fa-sitemap"> ' + d["Relation Name"] + '</i>'
+
+		     else if (d.name == "Sort")
+			 return '<i class="fa fa-sort-amount-asc"></i>'
+		     else if (d.name == "Hash")
+			 return '<i class="fa fa-hashtag"></i>'
+		     else if (d.name == "Hash Join")
+			 return '<i class="fa fa-code-fork"></i>'
+		     else if (d.name == "Nested Loop")
+			 return '<i class="fa fa-code-fork"></i>'
+
+		     else if (d.name == "Aggregate")
+			 return '<i class="fa fa-object-group"></i>'
+
+		     else
+			 return d.name;
+		 });
 	 });
 
 
 	</script>
+
+	<style>
+	 .node circle {
+	     fill: #999;
+	 }
+	</style>
 
     </Body>
 </html>
