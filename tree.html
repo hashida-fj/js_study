@@ -14,8 +14,11 @@
     </head>
 
     <body>
-	<i class="fa fa-sitemap"></i>
-	<i class="fa fa-code-fork fa-rotate-180"></i>
+	<form name="controller">
+	    <textarea name="explain" row ="10" cols="120"></textarea>
+	    <input type="button" value="Go" onclick="update()">
+	    <input type="button" value="Clear" onclick="clear()">
+	</form>
 
 	<script type="text/javascript">
 
@@ -81,95 +84,93 @@
 	     }
 	 }
 
-	 // not used
-	 function traverse(o, func) {
-	     for (var i in o) {
-	         func.apply(this, [i, o[i]]);
-	         if (o[i] !==  null && typeof(o[i]) == "object") {
-		     //going on step down in the object tree!!
-		     traverse(o[i], func);
-		 }
-	     }
-	 }
+	 var diagonal = d3.svg.diagonal();
 
-	 d3.json("api/q9", (err, data) => {
+	 function updateCore (jsonText) {
 
-	     var obj = data[0]["QUERY PLAN"][0]["Plan"];
-	     var renamedObj = JSON.parse(JSON.stringify(obj).split('"Node Type":').join('"name":'));
+	     // Node Type = name
+	     var data = JSON.parse(jsonText.split('"Node Type":').join('"name":'));
 
-	     // tree.nodesで、childrenのname分だけ、name/children/parent/depth/x/yを作る。
-	     var nodes = tree.nodes(renamedObj);
-	     nodes.forEach( d => {
+	     // get d3 layout data
+	     var obj = data[0]["Plan"];
+	     var nodeData = tree.nodes(obj);
+	     nodeData.forEach( d => {
 		 d.x = d.x * 2.5;
 		 d.y = d.y + 30;
-	     })
+	     });
+	     var linkData = tree.links(nodeData);
 
-	     // nodesから、diagonal用データ構造を作る
-	     var links = tree.links(nodes);
+	     // update links
+	     var links = svg.selectAll(".link") // rejoin data
+			    .data(linkData)
+	     links.enter().append("path")
+	     links.exit().remove(); // remove unneeded
+	     links
+		  .transition()
+	          .duration(500)
+	          .attr("class", "link")
+	          .attr("fill", "none")
+	          .attr("stroke", "gray")
+	          .attr("d", diagonal);
 
-	     var diagonal = d3.svg.diagonal();
+	     // update nodes.
+	     var nodes = svg.selectAll(".node") // rejoin data
+			    .data(nodeData)
+	     nodes.enter().append("g")
+	     nodes.exit().remove(); // remove unneeded nodes
+	     nodes
+		  .transition()
+	          .duration(500)
+		  .attr("class", "node")
+		  .attr("transform", d => { return `translate(${d.x}, ${d.y})`;})
+		  //.attr("transform", d => { return "translate("+ d.x + "," + d.y + ")";})
 
-	     //linksで作ったsource、targetでdiagonal曲線を作る。
-	     svg.selectAll(".link")
-	        .data(links)
-	        .enter()
-	        .append("path")
-	        .attr("class", "link")
-	        .attr("fill", "none")
-	        .attr("stroke", "gray")
-	        .attr("d", diagonal);
-
-	     // 円とテキストを入れるノードのコンテナg。
-	     var node = svg.selectAll(".node")
-			   .data(nodes) //nodesの数分gを作る。
-			   .enter()
-			   .append("g")
-			   .attr("class", "node")
-			   .attr("transform", d => { return "translate("+ d.x + "," + d.y + ")";})
-
-//	     node.append("text")
-//	         .text(d => {return d.name} )
-//	         .attr("x", 0)
-//		 .attr("y", 0)
-
-	     node.append("circle")
-		 .attr("r", 20)
-		 .on('mouseover', tip.show)
-		 .on('mouseout', tip.hide);
+	     nodes.append("circle")
+		  .attr("r", 20)
+		  .on('mouseover', tip.show)
+		  .on('mouseout', tip.hide);
 
 	     // It seems that foreringObject and tooltip are less compatible each other.
 	     // Maybe I sholud use combination of normal svg text object, CSS and unicode to display Iconfont.
-	     node.append('svg:foreignObject')
-	         .attr('x', -20)
-	         .attr('y', -20)
-	         .append("xhtml:body")
-	         .html( d => {
+	     nodes.append('svg:foreignObject')
+	          .attr('x', -20)
+	          .attr('y', -20)
+	          .append("xhtml:body")
+	          .html( d => {
+		      if (d.name == "Seq Scan")
+			  return '<i class="fa fa-table"> ' + d["Relation Name"] + '</i>'
+		      else if (d.name == "Index Scan")
+			  return '<i class="fa fa-sitemap"> ' + d["Relation Name"] + '</i>'
 
-		     if (d.name == "Seq Scan")
-			 return '<i class="fa fa-table"> ' + d["Relation Name"] + '</i>'
-		     else if (d.name == "Index Scan")
-			 return '<i class="fa fa-sitemap"> ' + d["Relation Name"] + '</i>'
+		      else if (d.name == "Sort")
+			  return '<i class="fa fa-sort-amount-asc"></i>'
+		      else if (d.name == "Hash")
+			  return '<i class="fa fa-hashtag"></i>'
+		      else if (d.name == "Hash Join")
+			  return '<i class="fa fa-code-fork"></i>'
+		      else if (d.name == "Nested Loop")
+			  return '<i class="fa fa-code-fork"></i>'
 
-		     else if (d.name == "Sort")
-			 return '<i class="fa fa-sort-amount-asc"></i>'
-		     else if (d.name == "Hash")
-			 return '<i class="fa fa-hashtag"></i>'
-		     else if (d.name == "Hash Join")
-			 return '<i class="fa fa-code-fork"></i>'
-		     else if (d.name == "Nested Loop")
-			 return '<i class="fa fa-code-fork"></i>'
+		      else if (d.name == "Aggregate")
+			  return '<i class="fa fa-object-group"></i>'
 
-		     else if (d.name == "Aggregate")
-			 return '<i class="fa fa-object-group"></i>'
+		      else if (d.name == "Limit")
+			  return '<i class="fa fa-cut"></i>'
 
-		     else if (d.name == "Limit")
-			 return '<i class="fa fa-cut"></i>'
+		      else
+			  return d.name;
+		  });
+	 }
 
-		     else
-			 return d.name;
-		 });
+	 function update() {
+	     updateCore(controller.explain.value)
+	 }
 
-	 });
+	 function clear() {
+	     controller.explain.value = '';
+	 }
+
+	 updateCore('[{"Plan": {"Node Type": "Limit"}}]')
 
 	</script>
 
