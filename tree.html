@@ -57,7 +57,23 @@
 	     if (a["Parent Relationship"] == "Inner") {
 		 return -1;
 	     } else {
-		 return 1;
+		 if (a["Parent Relationship"] == "Outer") {
+		     if (b["Parent Relationship"] == "Inner")
+			 return 1;
+		     else
+			 return -1;
+		 }
+		 else {
+		     if (b["Parent Relationship"] == "Inner" || b["Parent Relationship"] == "Outer")
+			 return 1;
+
+		     // maybe subplan
+		     if (! (a["Subplan Name"] || b["Subplan Name"]))
+			 throw "unknow plan node type";
+
+		     return (( a["Subplan Name"] == b["Subplan Name"] ) ? 0
+			   : (( a["Subplan Name"] > b["Subplan Name"] ) ? -1 : 1 ));
+		 }
 	     }
 	 }
 
