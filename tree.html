@@ -48,6 +48,18 @@
 	    </div>
 	</div>
 
+	<div style="display:none">
+	    <i class="fa fa-table"></i>
+	    <i class="fa fa-sitemap"></i>
+	    <i class="fa fa-sort-amount-asc"></i>
+	    <i class="fa fa-sort-amount-desc"></i>
+	    <i class="fa fa-hashtag"></i>
+	    <i class="fa fa-code-fork"></i>
+	    <i class="fa fa-object-group"></i>
+	    <i class="fa fa-cut"></i>
+	</div>
+
+
 	<script type="text/javascript">
 
          var width = 400*2.5;
@@ -66,7 +78,7 @@
 
 	 var tip = d3.tip()
 		     .attr('class', 'd3-tip')
-		     .offset([-10, 0])
+		     .offset([-20, 0])
 		     .html(function(d) {
 			 var tooltip = ""
 			 for (key in d) {
@@ -107,6 +119,34 @@
 
 	 var diagonal = d3.svg.diagonal();
 
+	 function symbolUnicode(d) {
+
+	     var faCode = c => {
+		 return window.getComputedStyle( document.getElementsByClassName(c)[0], ':before').content[1]
+	     }
+
+	     if (d.name == "Seq Scan")
+		 return faCode("fa-table")
+	     else if (d.name == "Index Scan")
+		 return faCode("fa-sitemap")
+	     else if (d.name == "Sort")
+		 return faCode("fa-sort-amount-asc")
+	     else if (d.name == "Hash")
+		 return faCode("fa-hashtag")
+	     else if (d.name == "Hash Join")
+		 return faCode("fa-code-fork")
+	     else if (d.name == "Merge Join")
+		 return faCode("fa-code-fork")
+	     else if (d.name == "Nested Loop")
+		 return faCode("fa-code-fork")
+	     else if (d.name == "Aggregate")
+		 return faCode("fa-object-group")
+	     else if (d.name == "Limit")
+		 return faCode("fa-cut")
+	     else
+		 return d.name;
+	 }
+
 	 function updateCore (jsonText) {
 
 	     // Node Type = name
@@ -137,6 +177,7 @@
 	     // update nodes.
 	     var nodes = svg.selectAll(".node") // rejoin data
 			    .data(nodeData)
+
 	     nodes.enter().append("g")
 	     nodes.exit().remove(); // remove unneeded nodes
 	     nodes
@@ -144,43 +185,20 @@
 	          .duration(500)
 		  .attr("class", "node")
 		  .attr("transform", d => { return `translate(${d.x}, ${d.y})`;})
-		  //.attr("transform", d => { return "translate("+ d.x + "," + d.y + ")";})
 
 	     nodes.append("circle")
 		  .attr("r", 20)
+
+	     nodes.append("text")
+	          .attr('text-anchor', 'middle')
+	          .attr('dominant-baseline', 'central')
+	          .attr('font-family', 'FontAwesome')
+	          .attr('font-size', '20px')
+	          .text(d => {return symbolUnicode(d)})
 		  .on('mouseover', tip.show)
 		  .on('mouseout', tip.hide);
 
-	     // It seems that foreringObject and tooltip are less compatible each other.
-	     // Maybe I sholud use combination of normal svg text object, CSS and unicode to display Iconfont.
-	     nodes.append('svg:foreignObject')
-	          .attr('x', -20)
-	          .attr('y', -20)
-	          .append("xhtml:body")
-	          .html( d => {
-		      if (d.name == "Seq Scan")
-			  return '<i class="fa fa-table"> ' + d["Relation Name"] + '</i>'
-		      else if (d.name == "Index Scan")
-			  return '<i class="fa fa-sitemap"> ' + d["Relation Name"] + '</i>'
 
-		      else if (d.name == "Sort")
-			  return '<i class="fa fa-sort-amount-asc"></i>'
-		      else if (d.name == "Hash")
-			  return '<i class="fa fa-hashtag"></i>'
-		      else if (d.name == "Hash Join")
-			  return '<i class="fa fa-code-fork"></i>'
-		      else if (d.name == "Nested Loop")
-			  return '<i class="fa fa-code-fork"></i>'
-
-		      else if (d.name == "Aggregate")
-			  return '<i class="fa fa-object-group"></i>'
-
-		      else if (d.name == "Limit")
-			  return '<i class="fa fa-cut"></i>'
-
-		      else
-			  return d.name;
-		  });
 	 }
 
 	 function update() {
@@ -202,7 +220,6 @@
 
 	 .d3-tip {
 	     line-height: 1;
-	     font-weight: bold;
 	     padding: 12px;
 	     background: rgba(99, 99, 99, 0.8);
 	     color: #fff;
