@@ -11,25 +11,53 @@
 	<!-- font awesome -->
 	<script src="https://use.fontawesome.com/9a30fbcc62.js"></script>
 
+	<!-- bootstrap -->
+	<!----- Latest compiled and minified CSS -->
+	<link rel="stylesheet"
+	      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	      crossorigin="anonymous">
+
+	<!----- Optional theme -->
+	<link rel="stylesheet"
+	      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+	      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+	      crossorigin="anonymous">
+
     </head>
 
     <body>
-	<form name="controller">
-	    <textarea name="explain" row ="10" cols="120"></textarea>
-	    <input type="button" value="Go" onclick="update()">
-	    <input type="button" value="Clear" onclick="clear()">
-	</form>
+
+	<div class="container">
+	    <h1> PostgreSQL Explain Visualizer </h1>
+	    <div class="row">
+		<div class="col-md-4 control">
+		    <form name="controller">
+			<div class="row">
+			    <textarea name="explain" class="form-control" rows="20" ></textarea>
+			    <input type="button" value="Go" class="form-control btn" onclick="update()">
+			    <input type="button" value="Clear" class="form-control btn" onclick="clear()">
+			</div>
+		    </form>
+		</div>
+
+		<!-- Tree Container -->
+		<div class="col-md-8" >
+		    <div class="tree" id="treeid"></div>
+		</div>
+	    </div>
+	</div>
 
 	<script type="text/javascript">
 
-         var width = 1200;
-	 var height = 700;
+         var width = 400*2.5;
+	 var height = 600+100;
 
-	 var svg = d3.select("body").append("svg")
+	 var svg = d3.select(".tree").append("svg")
 		     .attr("width", width)
 		     .attr("height", height)
 		     .append("g")
-		     .attr("transform", "translate(10,50)");//ここがツリーの左上になる。
+		     .attr("transform", "translate(0,0)");//ここがツリーの左上になる。
 
 	 var tree = d3.layout.tree()
 		      .size([400, 600]) // .size()でツリー全体のサイズを決める。
