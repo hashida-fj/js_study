@@ -40,34 +40,11 @@
 		     .attr('class', 'd3-tip')
 		     .offset([-10, 0])
 		     .html(function(d) {
-			 if (d.name == "Seq Scan") {
-
-			     var tooltip = ""
-			     for (key in d) {
-				 console.log(`${key} : ${d[key]}`)
-				 tooltip += `${key} : ${d[key]} <br>`;
-			     }
-
-			     return tooltip;
+			 var tooltip = ""
+			 for (key in d) {
+			     tooltip += `${key} : ${d[key]} <br>`;
 			 }
-			 else if (d.name == "Index Scan")
-			     return '<i class="fa fa-sitemap"> ' + d["Relation Name"] + '</i>'
-			 else if (d.name == "Sort")
-			     return '<i class="fa fa-sort-amount-asc"></i>'
-			 else if (d.name == "Hash")
-			     return '<i class="fa fa-hashtag"></i>'
-			 else if (d.name == "Hash Join")
-			     return '<i class="fa fa-code-fork"></i>'
-			 else if (d.name == "Nested Loop")
-			     return '<i class="fa fa-code-fork"></i>'
-			 else if (d.name == "Aggregate")
-			     return '<i class="fa fa-object-group"></i>'
-			 else if (d.name == "Limit")
-			     return '<i class="fa fa-cut"></i>'
-
-			 else
-		             return `<span>${d.name}</span>`;
-
+			 return tooltip;
 		     })
 
 	 svg.call(tip);
