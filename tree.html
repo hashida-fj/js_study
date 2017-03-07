@@ -78,11 +78,21 @@
 
 	 var tip = d3.tip()
 		     .attr('class', 'd3-tip')
-		     .offset([-20, 0])
+		     .offset(d => (d.x > width / 2) ? [0,-20] : [0,20])
+		     .direction(d => (d.x > width / 2) ? 'w' : 'e')
 		     .html(function(d) {
 			 var tooltip = ""
+
+			 var hiddenKeys = [
+			     // keys d3 added
+			     "x", "y", "depth", "children",
+			     // keys which are obvious form tree structreus
+			     "parent", "Plans",  "Parent Relationship"
+			 ]
+
 			 for (key in d) {
-			     tooltip += `${key} : ${d[key]} <br>`;
+			     if ( !hiddenKeys.includes(key))
+				 tooltip += `${key} : ${d[key]} <br>`;
 			 }
 			 return tooltip;
 		     })
@@ -245,6 +255,10 @@
 	     top: 100%;
 	     left: 0;
 	 }
+
+	 /* content: "\25B6"; right small triangl */
+	 /* content: "\25C0"; left small triangle */
+
 	</style>
 
     </Body>
