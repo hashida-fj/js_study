@@ -39,8 +39,8 @@ server.route({
     path: '/api/q8',
     handler: function (request, reply) {
 
-/////////////////////
-	var  q8_tmp = `
+        /////////////////////
+        var  q8_tmp = `
   SELECT
     o_year,
     SUM(
@@ -86,40 +86,40 @@ server.route({
   ORDER BY
     o_year;
 `;
-/////////////////////
+        /////////////////////
 
-	var q8_params = [request.query.nation.replace(/_/g, " ").toUpperCase(),
-			 request.query.region.replace(/_/g, " ").toUpperCase(),
-			 request.query.type.replace(/_/g, " ").toUpperCase()
-			];
+        var q8_params = [request.query.nation.replace(/_/g, " ").toUpperCase(),
+                         request.query.region.replace(/_/g, " ").toUpperCase(),
+                         request.query.type.replace(/_/g, " ").toUpperCase()
+                        ];
 
-	// connect to our database
-	var client = new Pg.Client(config);
-	client.connect(function (err) {
-	    if (err) throw err;
+        // connect to our database
+        var client = new Pg.Client(config);
+        client.connect(function (err) {
+            if (err) throw err;
 
-	    // execute a query on our database
-	    client.query(q8_tmp, q8_params, function (err, result) {
-		if (err) throw err;
+            // execute a query on our database
+            client.query(q8_tmp, q8_params, function (err, result) {
+                if (err) throw err;
 
-		// just print the result to the console
-		// console.log(result.rows);
-		reply(result.rows);
+                // just print the result to the console
+                // console.log(result.rows);
+                reply(result.rows);
 
-		// disconnect the client
-		client.end(function (err) {
-		    if (err) throw err;
-		});
-	    });
-	});
+                // disconnect the client
+                client.end(function (err) {
+                    if (err) throw err;
+                });
+            });
+        });
     },
     config : {
-	validate: {
-	    query : { nation : Joi.string().min(1).default("BRAZIL"),
-		      region : Joi.string().min(1).default("ASIA"),
-		      type : Joi.string().min(1).default("ECONOMY_ANODIZED_STEEL")
-		    }
-	}
+        validate: {
+            query : { nation : Joi.string().min(1).default("BRAZIL"),
+                      region : Joi.string().min(1).default("ASIA"),
+                      type : Joi.string().min(1).default("ECONOMY_ANODIZED_STEEL")
+                    }
+        }
     }
 });
 
@@ -128,13 +128,13 @@ server.route({
     method: 'GET',
     path: '/api/parm_test',
     handler: function (request, reply){
-	reply({greeting : 'hello ' + request.query.name });
+        reply({greeting : 'hello ' + request.query.name });
     },
     config : {
-	validate: {
-	    query : { name: Joi.string().min(1).required()
-	    }
-	}
+        validate: {
+            query : { name: Joi.string().min(1).required()
+                    }
+        }
     }
 });
 
@@ -143,23 +143,23 @@ server.route({
     path: '/api/nations',
     handler: function (request, reply) {
 
-	// connect to our database
-	var client = new Pg.Client(config);
-	client.connect(function (err) {
-	    if (err) throw err;
+        // connect to our database
+        var client = new Pg.Client(config);
+        client.connect(function (err) {
+            if (err) throw err;
 
-	    // execute a query on our database
-	    client.query("select n_name from nation", function (err, result) {
-		if (err) throw err;
-		// just print the result to the console
-		reply(result.rows);
+            // execute a query on our database
+            client.query("select n_name from nation", function (err, result) {
+                if (err) throw err;
+                // just print the result to the console
+                reply(result.rows);
 
-		// disconnect the client
-		client.end(function (err) {
-		    if (err) throw err;
-		});
-	    });
-	});
+                // disconnect the client
+                client.end(function (err) {
+                    if (err) throw err;
+                });
+            });
+        });
     }
 });
 
@@ -174,33 +174,33 @@ server.register(require('inert'), (err) =>  {
         method: 'GET',
         path: '/static',
         handler: function (request, reply) {
-	    reply.file('./index.html');
-	}
+            reply.file('./index.html');
+        }
     });
 
     server.route({
         method: 'GET',
         path: '/tree_test',
         handler: function (request, reply) {
-	    reply.file('./tree.html');
-	}
+            reply.file('./tree.html');
+        }
     });
 
     server.route({
-	method: 'GET',
-	path: '/scripts/{name}',
-	handler: function (request, reply) {
+        method: 'GET',
+        path: '/scripts/{name}',
+        handler: function (request, reply) {
             reply.file('./scripts/' +  encodeURIComponent(request.params.name));
-	}
+        }
     });
 
     // data
     server.route({
-	method: 'GET',
-	path: '/assets/{name}',
-	handler: function (request, reply) {
+        method: 'GET',
+        path: '/assets/{name}',
+        handler: function (request, reply) {
             reply.file('./assets/' +  encodeURIComponent(request.params.name));
-	}
+        }
     });
 });
 

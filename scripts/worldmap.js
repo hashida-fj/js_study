@@ -111,46 +111,46 @@ legend.addTo(map);
 function Sample1() {
     // REGION
     var getCheckedValue = function(radio) {
-	return [].reduce.call(radio, function(result, option) {
-	    if (option.checked) result.push(option.labels[0].innerText);
-	    return result;
-	}, []);
+        return [].reduce.call(radio, function(result, option) {
+            if (option.checked) result.push(option.labels[0].innerText);
+            return result;
+        }, []);
     };
     region = getCheckedValue(controller.region)[0];
 
     // NATIONS
     var getSelectedValues =  function(selectElement) {
-	return [].reduce.call(selectElement.options, function(result, option) {
-	    if (option.selected) result.push(option.value);
-	    return result;
-	}, []);
+        return [].reduce.call(selectElement.options, function(result, option) {
+            if (option.selected) result.push(option.value);
+            return result;
+        }, []);
     };
     nations = getSelectedValues(controller.nations);
 
     // url requests are excuted asynchronously.
     // So, they should be called in callback function
     geojson.eachLayer( function (layer) {
-	var name = layer.feature.properties.name;
+        var name = layer.feature.properties.name;
 
-	if (nations.indexOf(name) != -1) {
-	    var url = "api/q8?" +
-		"nation=" + name +
-		"&region=" + region +
-		"&type=" + controller.prod_size.value + "_" +
-		controller.prod_texture.value + "_" +
-		controller.prod_material.value;
+        if (nations.indexOf(name) != -1) {
+            var url = "api/q8?" +
+                "nation=" + name +
+                "&region=" + region +
+                "&type=" + controller.prod_size.value + "_" +
+                controller.prod_texture.value + "_" +
+                controller.prod_material.value;
 
-	    d3.json(url, function(error, result) {
-		layer.setStyle({
-		    fillColor: color(result[0].mkt_share),
-		    fillOpacity: 0.7
-		});
-	    });
-	} else {
-	    layer.setStyle({
-		fillColor: '#888888',
-		fillOpacity: 0.7
-	    });
-	}
+            d3.json(url, function(error, result) {
+                layer.setStyle({
+                    fillColor: color(result[0].mkt_share),
+                    fillOpacity: 0.7
+                });
+            });
+        } else {
+            layer.setStyle({
+                fillColor: '#888888',
+                fillOpacity: 0.7
+            });
+        }
     });
 }

@@ -1,193 +1,193 @@
 <!DOCTYPE html>
 <html>
     <head>
-	<meta charset="UTF-8">
-	<title>D3+Leaflet Sample</title>
+        <meta charset="UTF-8">
+        <title>D3+Leaflet Sample</title>
 
-	<!-- d3 -->
-	<script src="http://d3js.org/d3.v3.min.js"></script>
-	<script src="http://d3js.org/topojson.v2.min.js"></script>
-	<script src="https://d3js.org/d3-color.v1.min.js"></script>
-	<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <!-- d3 -->
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="http://d3js.org/topojson.v2.min.js"></script>
+        <script src="https://d3js.org/d3-color.v1.min.js"></script>
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-	<!-- leaflet -->
-	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+        <!-- leaflet -->
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
 
-	<!-- bootstrap -->
-	<!----- Latest compiled and minified CSS -->
-	<link rel="stylesheet"
-	      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-	      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-	      crossorigin="anonymous">
+        <!-- bootstrap -->
+        <!----- Latest compiled and minified CSS -->
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+              crossorigin="anonymous">
 
-	<!----- Optional theme -->
-	<link rel="stylesheet"
-	      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-	      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-	      crossorigin="anonymous">
+        <!----- Optional theme -->
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+              integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+              crossorigin="anonymous">
     </head>
 
     <body>
-	<div class="container">
+        <div class="container">
 
-	    <h1> Query Q8 Sample </h1>
-	    <div class="row">
+            <h1> Query Q8 Sample </h1>
+            <div class="row">
 
-		<!-- Controller -->
-		<div class="col-md-4 control">
-		    <form action="index.html" name="controller">
+                <!-- Controller -->
+                <div class="col-md-4 control">
+                    <form action="index.html" name="controller">
 
-			<!-- Region ------------------------------------------->
-			<div class="form-group">
-			    <label for="Region">Region</label>
+                        <!-- Region ------------------------------------------->
+                        <div class="form-group">
+                            <label for="Region">Region</label>
 
-			    <div class="btn-group" data-toggle="buttons">
-				<label class="btn btn-primary active">
-				    <input type="radio" name="region" checked> Africa
-				</label>
-				<label class="btn btn-primary">
-				    <input type="radio" name="region"> America
-				</label>
-				<label class="btn btn-primary">
-				    <input type="radio" name="region"> Asia
-				</label>
-				<label class="btn btn-primary">
-				    <input type="radio" name="region"> Europe
-				</label>
-				<label class="btn btn-primary">
-				    <input type="radio" name="region"> Middle East
-				</label>
-			    </div>
-			</div>
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="region" checked> Africa
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="region"> America
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="region"> Asia
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="region"> Europe
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="region"> Middle East
+                                </label>
+                            </div>
+                        </div>
 
-			<!-- Product Type ------------------------------------------->
-			<div class="form-group">
-			    <label for="Product type">Product Type</label>
-			    <div class="row">
-				<div class="col-md-4">
-				    <label for="prod_size" > Size </label>
-				    <select class="form-control" name="prod_size">
-					<option>Economy</option>
-					<option>Large</option>
-					<option>Medium</option>
-					<option>Promo</option>
-					<option>Small</option>
-					<option>Standard</option>
-				    </select>
-				</div>
-				<div class="col-md-4">
-				    <label for="prod_texture"> Texture </label>
-				    <select class="form-control" name="prod_texture">
-					<option>Anodized</option>
-					<option>Brushed</option>
-					<option>Burnished</option>
-					<option>Plated</option>
-					<option>Polished</option>
-				    </select>
-				</div>
-				<div class="col-md-4">
-				    <label for="prod_material"> Material </label>
-				    <select class="form-control" name="prod_material">
-					<option>Brass</option>
-					<option>Copper</option>
-					<option>Nickel</option>
-					<option>Steel</option>
-					<option>Tin</option>
-				    </select>
-				</div>
-			    </div>
-			</div>
+                        <!-- Product Type ------------------------------------------->
+                        <div class="form-group">
+                            <label for="Product type">Product Type</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="prod_size" > Size </label>
+                                    <select class="form-control" name="prod_size">
+                                        <option>Economy</option>
+                                        <option>Large</option>
+                                        <option>Medium</option>
+                                        <option>Promo</option>
+                                        <option>Small</option>
+                                        <option>Standard</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="prod_texture"> Texture </label>
+                                    <select class="form-control" name="prod_texture">
+                                        <option>Anodized</option>
+                                        <option>Brushed</option>
+                                        <option>Burnished</option>
+                                        <option>Plated</option>
+                                        <option>Polished</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="prod_material"> Material </label>
+                                    <select class="form-control" name="prod_material">
+                                        <option>Brass</option>
+                                        <option>Copper</option>
+                                        <option>Nickel</option>
+                                        <option>Steel</option>
+                                        <option>Tin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-			<!-- Nations ------------------------------------------>
-			<div class="form-group">
-			    <label for="Nations list">Nations</label>
-			    <select class="form-control" multiple name="nations" size=8>
-				<optgroup label="Africa">
-				    <option>Algeria</option>
-				    <option>Egypt</option>
-				    <option>Ethiopia</option>
-				    <option>Kenya</option>
-				    <option>Morocco</option>
-				    <option>Mozambique</option>
-				</optgroup>
-				<optgroup label="America">
-				    <option>Argentina</option>
-				    <option>Brazil</option>
-				    <option>Canada</option>
-				    <option>Peru</option>
-				    <option>United States</option>
-				</optgroup>
-				<optgroup label="Asia">
-				    <option>China</option>
-				    <option>India</option>
-				    <option>Indonesia</option>
-				    <option>Japan</option>
-				    <option>Vietnam</option>
-				</optgroup>
-				<optgroup label="Europe">
-				    <option>France</option>
-				    <option>Germany</option>
-				    <option>Romania</option>
-				    <option>Russia</option>
-				    <option>United Kingdom</option>
-				</optgroup>
-				<optgroup label="Middle East">
-				    <option>Iran</option>
-				    <option>Iraq</option>
-				    <option>Jordan</option>
-				    <option>Saudi Arabia</option>
-				</optgroup>
-			    </select>
-			</div>
+                        <!-- Nations ------------------------------------------>
+                        <div class="form-group">
+                            <label for="Nations list">Nations</label>
+                            <select class="form-control" multiple name="nations" size=8>
+                                <optgroup label="Africa">
+                                    <option>Algeria</option>
+                                    <option>Egypt</option>
+                                    <option>Ethiopia</option>
+                                    <option>Kenya</option>
+                                    <option>Morocco</option>
+                                    <option>Mozambique</option>
+                                </optgroup>
+                                <optgroup label="America">
+                                    <option>Argentina</option>
+                                    <option>Brazil</option>
+                                    <option>Canada</option>
+                                    <option>Peru</option>
+                                    <option>United States</option>
+                                </optgroup>
+                                <optgroup label="Asia">
+                                    <option>China</option>
+                                    <option>India</option>
+                                    <option>Indonesia</option>
+                                    <option>Japan</option>
+                                    <option>Vietnam</option>
+                                </optgroup>
+                                <optgroup label="Europe">
+                                    <option>France</option>
+                                    <option>Germany</option>
+                                    <option>Romania</option>
+                                    <option>Russia</option>
+                                    <option>United Kingdom</option>
+                                </optgroup>
+                                <optgroup label="Middle East">
+                                    <option>Iran</option>
+                                    <option>Iraq</option>
+                                    <option>Jordan</option>
+                                    <option>Saudi Arabia</option>
+                                </optgroup>
+                            </select>
+                        </div>
 
-			<!-- Year (optional) ----------------------------------------
-			<div class="form-group">
-			    <label for="Year">Year</label>
-			    <input type="range" name="range">
-			</div>
-			   --->
+                        <!-- Year (optional) ----------------------------------------
+                             <div class="form-group">
+                             <label for="Year">Year</label>
+                             <input type="range" name="range">
+                             </div>
+                           --->
 
-			<!-- Submit - progress ------------------------------------------->
-			<input type="button" value="Go" onclick="Sample1()" class="btn btn-primary">
+                        <!-- Submit - progress ------------------------------------------->
+                        <input type="button" value="Go" onclick="Sample1()" class="btn btn-primary">
 
-		    </form>
-		</div>
+                    </form>
+                </div>
 
-		<!-- Map Container -->
-		<div class="col-md-8">
-		    <div class="map" id="mapid"></div>
-		    <script src="scripts/worldmap.js">
-		    </script>
-		</div>
+                <!-- Map Container -->
+                <div class="col-md-8">
+                    <div class="map" id="mapid"></div>
+                    <script src="scripts/worldmap.js">
+                    </script>
+                </div>
 
-	    </div>
-	</div>
+            </div>
+        </div>
 
 
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-		crossorigin="anonymous"></script>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+                crossorigin="anonymous"></script>
     </body>
 
     <style type="text/css">
      div.control {
-	 background-color: #FFFFee;
+         background-color: #FFFFee;
      }
 
      div.map {
-	 width: 1000px;
-	 height : 600px;
-	 background-color: #eeeeee;
+         width: 1000px;
+         height : 600px;
+         background-color: #eeeeee;
      }
 
      .no-gutters > .col-md-4 {
-	 padding-right: 0;
-	 padding-left: 0;
+         padding-right: 0;
+         padding-left: 0;
      }
 
      .info {
