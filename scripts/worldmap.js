@@ -1,10 +1,11 @@
-var width = 1000;
-var height = 1000;
+var width = 400;
+var height = 300;
 
 // leaflet objects
-var map = L.map('mapid').setView([30, 0], 2);
+var map = L.map('mapid').setView([30, 0], 1);
 var tile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    maxzoom: 10
 }).addTo(map);
 var geojson;
 
