@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<meta charset="UTF-8">
+	<title>D3 tree layout</title>
+
+	<!-- d3 -->
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
+	<!-- font awesome -->
+	<script src="https://use.fontawesome.com/9a30fbcc62.js"></script>
+
+	<!-- bootstrap -->
+	<!----- Latest compiled and minified CSS -->
+	<link rel="stylesheet"
+	      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	      crossorigin="anonymous">
+
+	<!----- Optional theme -->
+	<link rel="stylesheet"
+	      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+	      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+	      crossorigin="anonymous">
+
+    </head>
+    <div class="figure"></div>
+
+    <body>
+	<script type="text/javascript">
+	 var width = 500;
+	 var height = 500;
+
+	 var svg = d3.select(".figure").append("svg")
+		     .attr("width", width)
+		     .attr("height", height)
+		     .append("g")
+		     .attr("transform", "translate(0,0)")
+
+	 var color = d3.scale.category20();
+
+	 // at very first, draw circle
+	 var data = [{x : 100, y : 100, r: 10, id: 0}
+		    ,{x : 200, y : 200, r: 10, id: 1}
+		    ,{x : 300, y : 300, r: 10, id: 2}
+		    ,{x : 400, y : 400, r: 10, id: 3}]
+
+	 svg.selectAll('circle')
+	    .data(data)
+	    .enter()
+	    .append('circle')
+	    .attr("cx", d => d.x)
+	    .attr("cy", d => d.y)
+	    .attr("r", d => d.r * 5)
+	    .attr("fill", (d, i) => color(i))
+	 ;
+
+	</script>
+
+	<style>
+         circle {
+             /* fill: #9999FF; */
+	     stroke: black;
+	     stroke-width: 2;
+         }
+	</style>
+
+    </Body>
+</html>

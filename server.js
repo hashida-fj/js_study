@@ -188,8 +188,16 @@ server.register(require('inert'), (err) =>  {
 
     server.route({
         method: 'GET',
-        path: '/scripts/{name}',
+        path: '/figure',
         handler: function (request, reply) {
+	    reply.file('./figure.html');
+	}
+    });
+
+    server.route({
+	method: 'GET',
+	path: '/scripts/{name}',
+	handler: function (request, reply) {
             reply.file('./scripts/' +  encodeURIComponent(request.params.name));
         }
     });
